@@ -44,7 +44,7 @@ function fit_ridge(X, y, lambda)
     return beta
 end
 
-lambda = 500.0
+lambda = 50.0
 beta = fit_ridge(X, y, lambda)
 
 y_pred = X * beta
@@ -65,6 +65,7 @@ for (name, coef) in zip(coef_names[1:min(10, end)], beta[1:min(10, end)])
     println("$(rpad(name, 25)): $(round(coef, digits=4))")
 end
 
+default(fontfamily="Arial", label="", titlefontsize=10, guidefontsize=9, tickfontsize=8)
 
 # Plot 1: Predicted vs Actual
 p1 = plot(df.timestamp, y, label="Actual price", lw=2, color=palette_nordic[1],
@@ -73,11 +74,11 @@ p1 = plot(df.timestamp, y, label="Actual price", lw=2, color=palette_nordic[1],
 plot!(p1, df.timestamp, y_pred, label="Ridge Regression", lw=2, color=palette_nordic[4], linestyle=:dash)
 
 # Plot 2: Scatterplot target vs predicted
-p2 = scatter(y, y_pred, label="Data points", alpha=0.7, color=palette_nordic[2],
+p2 = scatter(y, y_pred, label="Samples", alpha=0.7, color=palette_nordic[5],
              title="Scatterplot: target vs predicted (R² = $(round(r2, digits=3)))",
              xlabel="Actual Price (EUR/MWh)", ylabel="Predicteed Price (EUR/MWh)")
 plot!(p2, [minimum(y), maximum(y)], [minimum(y), maximum(y)], 
-      label="(y = x)", color=:black, lw=2, linestyle=:dash)
+      label="1:1 Fit Line", color=:black, lw=2, linestyle=:dash)
 
 # Plot 3: Histogram for residuals
 p3 = histogram(residuals, bins=15, color=palette_nordic[3], alpha=0.7, legend=false,
@@ -128,5 +129,5 @@ dashboard = plot(
     plot_title = "Dashboard for Ridge Regression with λ=$(round(lambda, digits=2))",
     plot_titlefontsize = 16
 )
-savefig(dashboard, "ridge_regression_plots_lambda_$(Int(round(lambda))).png")
+savefig(dashboard, "plots/ridge_regression_plots_lambda_$(Int(round(lambda))).png")
 print("\n Saved dashboard!")
