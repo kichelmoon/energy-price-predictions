@@ -8,9 +8,12 @@ using Dates
 using Statistics
 using Plots
 
+# Hex codes: Steel Blue, Terracotta, Forest Pine, Ochre, Slate Purple, Sand
+palette_nordic = ["#3B5998", "#D96B43", "#2E6B56", "#E5A93C", "#6C5B7B", "#A89F91"]
+
 gr()
 
-filename = "entsoe_hourly_data_de_lu.csv"
+filename = "data/entsoe_hourly_data_de_lu.csv"
 df = CSV.read(filename, DataFrame)
 
 rename!(df, 1 => :timestamp)
@@ -35,13 +38,13 @@ X = hcat(ones(size(X_scaled, 1)), X_scaled)
 function fit_ridge(X, y, lambda)
     n_features = size(X, 2)
     I_reg = Matrix{Float64}(I, n_features, n_features)
-    I_reg[1, 1] = 0.0 # Den Intercept/Bias nicht regularisieren!
+    I_reg[1, 1] = 0.0 #Ignore intercept
     
-    beta = (X' * X + lambda * I_reg) \ (X' * y)
+    beta = (X' * X + lambda * I_reg) \ (X' * y) #Pseudoinverse goes brrrr
     return beta
 end
 
-lambda = 10.0
+lambda = 500.0
 beta = fit_ridge(X, y, lambda)
 
 y_pred = X * beta
@@ -64,41 +67,45 @@ end
 
 
 # Plot 1: Predicted vs Actual
-p1 = plot(df.timestamp, y, label="Actual price", lw=2, color=:blue,
+p1 = plot(df.timestamp, y, label="Actual price", lw=2, color=palette_nordic[1],
           title="Predicted prices and actual prices",
           xlabel="Date / Time", ylabel="EUR/MWh", legend=:topleft)
-plot!(p1, df.timestamp, y_pred, label="Ridge Regression", lw=2, color=:orange, linestyle=:dash)
+plot!(p1, df.timestamp, y_pred, label="Ridge Regression", lw=2, color=palette_nordic[4], linestyle=:dash)
 
 # Plot 2: Scatterplot target vs predicted
-p2 = scatter(y, y_pred, label="Data points", alpha=0.7, color=:teal,
+p2 = scatter(y, y_pred, label="Data points", alpha=0.7, color=palette_nordic[2],
              title="Scatterplot: target vs predicted (R² = $(round(r2, digits=3)))",
              xlabel="Actual Price (EUR/MWh)", ylabel="Predicteed Price (EUR/MWh)")
 plot!(p2, [minimum(y), maximum(y)], [minimum(y), maximum(y)], 
-      label="(y = x)", color=:red, lw=2, linestyle=:dash)
+      label="(y = x)", color=:black, lw=2, linestyle=:dash)
 
 # Plot 3: Histogram for residuals
-p3 = histogram(residuals, bins=15, color=:purple, alpha=0.7, legend=false,
-               title="Residual plot",
-               xlabel="Error (y_true - y_pred)", ylabel="Frequency")
+p3 = histogram(residuals, bins=15, color=palette_nordic[3], alpha=0.7, legend=false,
+               yscale = :log10,         # Logarithmic scale for y-axis
+               ylims = (1, :auto),      # Prevents log(0) errors for empty bins
+               title = "Residual plot (Log Scale)",
+               xlabel = "Error (y_true - y_pred)", ylabel = "Frequency (log scale)")
 vline!(p3, [0], color=:black, lw=2, linestyle=:dash)
 
 # Plot 4: Top features
 feature_names = string.(feature_cols)
 coef_importance = abs.(beta[2:end])
 
-top_n = min(5, length(coef_importance))
+top_n = min(10, length(coef_importance))
 sort_idx = sortperm(coef_importance, rev=true)[1:top_n]
 
 top_names = feature_names[sort_idx]
 top_values = coef_importance[sort_idx]
 
 p4 = bar(
+    1:top_n,                     # Explicitly position each bar at unit intervals (1, 2, ..., top_n)
     top_values,
     orientation = :h,
     yticks = (1:top_n, top_names),
-    color = :coral,
+    color = palette_nordic[5],
     legend = false,
     yflip = true,
+    ylims = (0.5, top_n + 0.5),   # Tightens vertical margins to eliminate blank padding
     xlims = (0, maximum(top_values) * 1.25),
     title = "Most predictive features",
     xlabel = "|β|",
@@ -113,6 +120,13 @@ for i in 1:top_n
 end
 
 # Print Dashboard
-dashboard = plot(p1, p2, p3, p4, layout=(2, 2), size=(1200, 800), margin=5Plots.mm)
-savefig(dashboard, "ridge_regression_plots.png")
+dashboard = plot(
+    p1, p2, p3, p4,
+    layout = (2, 2),
+    size = (1200, 800),
+    margin = 5Plots.mm,
+    plot_title = "Dashboard for Ridge Regression with λ=$(round(lambda, digits=2))",
+    plot_titlefontsize = 16
+)
+savefig(dashboard, "ridge_regression_plots_lambda_$(Int(round(lambda))).png")
 print("\n Saved dashboard!")
