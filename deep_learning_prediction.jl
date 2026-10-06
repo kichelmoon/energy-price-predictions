@@ -1,6 +1,7 @@
 using CSV
 using DataFrames
 using Random
+using Dates
 using Statistics
 using Plots
 
@@ -13,11 +14,16 @@ d_relu(z) = Float32.(z .> 0)
 
 df = CSV.read("data/entsoe_hourly_data_de_lu.csv", DataFrame)
 rename!(df, 1 => :timestamp)
+# Easier format to work with in plotting
+clean_time_strings = first.(string.(df.timestamp), 19)
+parsed_timestamps = DateTime.(clean_time_strings, dateformat"yyyy-mm-dd HH:MM:SS")
+df.timestamp = parsed_timestamps
+
 
 label_col = :energy_prices
 feature_cols = filter(col -> col != label_col && col != :timestamp, propertynames(df))
 
-y = Vector{Float64}(df[!, label_col])
+y_raw = Vector{Float64}(df[!, label_col])
 X_raw = Matrix{Float64}(df[!, feature_cols])
 
 # Z-score
