@@ -37,10 +37,14 @@ A dense neural network architecture designed to capture non-linear market dynami
 
 ### 1) Data Retrieval & Preprocessing
 
-Navigate to the `data/` directory: \* Run `data.ipynb` to fetch historical market data via the ENTSO-E API (*requires API key*). \* Alternatively, run `create_dummy_csv.py` to generate synthetic market data for offline development.
+Navigate to the `data/` directory:
+
+\* Run `data.ipynb` to fetch historical market data via the ENTSO-E API (*requires API key*).
+
+\* Alternatively, run `create_dummy_csv.py` to generate synthetic market data for offline development.
 
 *Both methods clean, scale, and format temporal features into periodic representations tailored for deep learning inputs.*
 
 ### 2) Model Execution & Dashboard
 
-Once the dataset is prepared, run the main Julia script: \`\`\`bash julia energy_price_predictions.jl
+Once the dataset is prepared, run the main Julia script: `julia energy_price_predictions.jl`

@@ -166,7 +166,7 @@ residuals = y_raw .- all_predictions
 
 default(fontfamily="Arial", label="", titlefontsize=10, guidefontsize=9, tickfontsize=8)
 
-p1 = plot_predictions(df, y_raw, all_predictions, "Ridge Regression")
+p1 = plot_predictions(df, y_raw, all_predictions, "Deep Learning")
 p2 = plot_scatter(y_raw, all_predictions)
 p3 = plot_residual_histogram(residuals)
 p4 = plot_loss_convergence(epochs, loss_history)
