@@ -50,7 +50,8 @@ end
 
 function ridge_regression(X, y, lambda)
     beta = fit_ridge(X, y, lambda)
-    y_pred = X * beta
+    y_pred_norm = X * beta
+    y_pred = (y_pred_norm .* y_std) .+ y_mean
 
     residuals = y .- y_pred
     rmse = sqrt(mean(residuals .^ 2))
@@ -69,8 +70,8 @@ function ridge_regression(X, y, lambda)
     end
 
     default(fontfamily="Arial", label="", titlefontsize=10, guidefontsize=9, tickfontsize=8)
-    p1 = plot_predictions(df, y, y_pred, "Ridge Regression")
-    p2 = plot_scatter(y, y_pred)
+    p1 = plot_predictions(df, y_raw, y_pred, "Ridge Regression")
+    p2 = plot_scatter(y_raw, y_pred)
     p3 = plot_residual_histogram(residuals)
     p4 = plot_top_features(feature_cols, beta)    
 
