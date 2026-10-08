@@ -13,3 +13,6 @@ data/entsoe_hourly_data_de_lu.csv
 .ipynb_checkpoints/ridge_regression_prediction-checkpoint.jl
 data/.ipynb_checkpoints/data-checkpoint.ipynb
 data/.ipynb_checkpoints/entsoe_hourly_data_de_lu-checkpoint.csv
+.ipynb_checkpoints/energy_price_predictions-checkpoint.jl
+data/.ipynb_checkpoints/Untitled-checkpoint.ipynb
+data/.ipynb_checkpoints/plots-checkpoint.jl
