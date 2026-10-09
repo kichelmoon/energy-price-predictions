@@ -1,4 +1,4 @@
-# ⚡ Day-Ahead Electricity Price Forecasting (in Julia)
+# Day-Ahead Electricity Price Forecasting (in Julia)
 
 Quantitative modeling pipeline to forecast Day-Ahead electricity prices using **Julia**. This repository compares a classical regularized linear baseline (Ridge Regression) against a multi-layer Neural Network trained on fundamental market features.
 
@@ -6,7 +6,7 @@ Quantitative modeling pipeline to forecast Day-Ahead electricity prices using **
 
 ------------------------------------------------------------------------
 
-## 📌 Key Highlights
+## Key Highlights
 
 - **Domain & Data:** Automated ingestion of European power market data via the **ENTSO-E Transparency Platform API** (with local dummy data fallback for testing).
 - **Feature Engineering:** Periodic/cyclical transformation of temporal features (e.g., sine/cosine encoding for hour-of-day dynamics) to capture intraday seasonalities.
@@ -14,7 +14,7 @@ Quantitative modeling pipeline to forecast Day-Ahead electricity prices using **
 
 ------------------------------------------------------------------------
 
-## 📊 Models & Methodology
+## Models & Methodology
 
 ### 1. Ridge Regression (Linear Baseline)
 
@@ -33,7 +33,7 @@ A dense neural network architecture designed to capture non-linear market dynami
 
 ------------------------------------------------------------------------
 
-## 🚀 How to Run & Use
+## How to Run
 
 ### 1) Data Retrieval & Preprocessing
 
